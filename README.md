@@ -81,3 +81,7 @@ Exportação dos resultados em formato CSV ou PDF
 Adição de visualizações mais sofisticadas como gráficos
 Personalização dos volumes de cada tipo de resposta
 Implementação de autenticação para múltiplos administradores
+
+
+![image](https://github.com/user-attachments/assets/0a813a97-64a1-482c-bf39-2f9661c2c724)
+
