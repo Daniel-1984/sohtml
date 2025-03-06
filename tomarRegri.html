@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vai Tomar Refrigerante?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .pergunta-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .resultado-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: #e8f4fc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .historico-container {
+            width: 100%;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .nome-input {
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nome-input input {
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .total-pessoas {
+            background-color: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .nova-pessoa {
+            background-color: #2ecc71;
+            margin-top: 15px;
+        }
+        
+        .nova-pessoa:hover {
+            background-color: #27ae60;
+        }
+        
+        .pergunta {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .porcentagem {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        
+        .resultado-titulo {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .resultado-mensagem {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .emoji {
+            font-size: 40px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        table th, table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        table th {
+            background-color: #f2f2f2;
+        }
+        
+        .estatisticas {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .estatistica-item {
+            text-align: center;
+            padding: 10px;
+            margin: 5px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            min-width: 120px;
+        }
+        
+        .estatistica-valor {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .estatistica-descricao {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .destaque {
+            background-color: #d5f5e3;
+            border: 1px solid #2ecc71;
+        }
+        
+        .volume-info {
+            font-size: 16px;
+            font-style: italic;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .progresso-container {
+            width: 100%;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            margin-top: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        
+        .barra-progresso {
+            height: 25px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+        
+        .meta-litros {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Decisão de Refrigerante</h1>
+        
+        <div class="nome-input">
+            <input type="text" id="nome" placeholder="Digite seu nome" onchange="atualizarNome()">
+            <span class="total-pessoas" id="total-pessoas">0</span>
+        </div>
+        
+        <div class="flex-container">
+            <div class="pergunta-container">
+                <div id="pergunta1">
+                    <p class="pergunta"><span id="nome-display">Você</span> vai tomar refrigerante?</p>
+                    <div class="buttons">
+                        <button onclick="responder(1, true)">Sim</button>
+                        <button onclick="responder(1, false)">Não</button>
+                    </div>
+                </div>
+                
+                <div id="pergunta2" style="display: none;">
+                    <p class="pergunta">Mas nem um golinho?</p>
+                    <div class="buttons">
+                        <button onclick="responder(2, true)">Sim, um golinho</button>
+                        <button onclick="responder(2, false)">Não</button>
+                    </div>
+                </div>
+                
+                <div id="pergunta3" style="display: none;">
+                    <p class="pergunta">E um tiquinho, só para experimentar?</p>
+                    <div class="buttons">
+                        <button onclick="responder(3, true)">Sim, um tiquinho</button>
+                        <button onclick="responder(3, false)">Não, definitivamente não</button>
+                    </div>
+                </div>
+                
+                <div id="novaPessoa" style="display: none; text-align: center;">
+                    <button class="nova-pessoa" onclick="novaPessoa()">Nova Pessoa</button>
+                </div>
+            </div>
+            
+            <div id="resultado-container" class="resultado-container">
+                <h2 class="resultado-titulo">Resultado Atual</h2>
+                <div id="emoji" class="emoji"></div>
+                <div id="resultado" class="resultado-mensagem">Aguardando resposta...</div>
+                <div id="volume-individual" class="volume-info"></div>
+            </div>
+        </div>
+        
+        <div id="historico-container" class="historico-container">
+            <h2>Histórico de Respostas</h2>
+            
+            <div class="estatisticas">
+                <div class="estatistica-item">
+                    <div class="estatistica-valor" id="total-registros">0</div>
+                    <div class="estatistica-descricao">Total de pessoas</div>
+                </div>
+                <div class="estatistica-item">
+                    <div class="estatistica-valor" id="total-sim">0</div>
+                    <div class="estatistica-descricao">Tomam tudo</div>
+                </div>
+                <div class="estatistica-item">
+                    <div class="estatistica-valor" id="total-golinho">0</div>
+                    <div class="estatistica-descricao">Tomam um golinho</div>
+                </div>
+                <div class="estatistica-item">
+                    <div class="estatistica-valor" id="total-tiquinho">0</div>
+                    <div class="estatistica-descricao">Tomam um tiquinho</div>
+                </div>
+                <div class="estatistica-item">
+                    <div class="estatistica-valor" id="total-nao">0</div>
+                    <div class="estatistica-descricao">Não tomam</div>
+                </div>
+                <div class="estatistica-item destaque">
+                    <div class="estatistica-valor" id="total-volume">0</div>
+                    <div class="estatistica-descricao">Volume total (ml)</div>
+                </div>
+                <div class="estatistica-item destaque">
+                    <div class="estatistica-valor" id="total-litros">0</div>
+                    <div class="estatistica-descricao">Litros totais</div>
+                </div>
+            </div>
+            
+            <div class="progresso-container">
+                <div class="barra-progresso" id="barra-progresso">0%</div>
+                <div class="meta-litros">Volume consumido em direção a 5 litros</div>
+            </div>
+            
+            <table id="tabela-historico">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Decisão</th>
+                        <th>Volume (ml)</th>
+                        <th>Horário</th>
+                    </tr>
+                </thead>
+                <tbody id="historico-tbody">
+                    <!-- Registros serão adicionados aqui via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // Configurações
+        const VOLUME_COPO = 300; // Volume de um copo em ml
+        const VOLUME_GOLINHO = 150; // Volume de um golinho em ml (50% de um copo)
+        const VOLUME_TIQUINHO = 75; // Volume de um tiquinho em ml (25% de um copo)
+        const META_LITROS = 5; // Meta em litros para a barra de progresso
+        
+        // Variáveis de controle
+        let volumeConsumido = 0;
+        let decisaoAtual = "";
+        let nome = "Você";
+        let historicoRespostas = [];
+        let totalSim = 0;
+        let totalGolinho = 0;
+        let totalTiquinho = 0;
+        let totalNao = 0;
+        let volumeTotal = 0; // Volume total em ml
+        
+        function atualizarNome() {
+            nome = document.getElementById('nome').value.trim();
+            if (nome === "") nome = "Você";
+            
+            // Atualiza todos os lugares que mostram o nome
+            const nomesDisplay = document.querySelectorAll('#nome-display');
+            nomesDisplay.forEach(element => {
+                element.textContent = nome;
+            });
+        }
+        
+        function responder(pergunta, resposta) {
+            if (pergunta === 1) {
+                if (resposta) {
+                    // Respondeu sim na primeira pergunta - toma o copo todo
+                    volumeConsumido = VOLUME_COPO;
+                    decisaoAtual = "Vai tomar tudo";
+                    totalSim++;
+                    mostrarResultado("🥤😋", `${nome} VAI tomar refrigerante inteiro`);
+                } else {
+                    // Respondeu não na primeira pergunta, vai para a segunda
+                    document.getElementById('pergunta1').style.display = 'none';
+                    document.getElementById('pergunta2').style.display = 'block';
+                }
+            } else if (pergunta === 2) {
+                if (resposta) {
+                    // Respondeu sim para o golinho
+                    volumeConsumido = VOLUME_GOLINHO;
+                    decisaoAtual = "Vai tomar um golinho";
+                    totalGolinho++;
+                    mostrarResultado("🥤😏", `${nome} VAI tomar um golinho`);
+                } else {
+                    // Respondeu não para o golinho, vai para a terceira pergunta
+                    document.getElementById('pergunta2').style.display = 'none';
+                    document.getElementById('pergunta3').style.display = 'block';
+                }
+            } else if (pergunta === 3) {
+                if (resposta) {
+                    // Respondeu sim para o tiquinho
+                    volumeConsumido = VOLUME_TIQUINHO;
+                    decisaoAtual = "Vai tomar um tiquinho";
+                    totalTiquinho++;
+                    mostrarResultado("🥤🤏", `${nome} VAI tomar só um tiquinho`);
+                } else {
+                    // Respondeu não para todas as opções
+                    volumeConsumido = 0;
+                    decisaoAtual = "Não vai tomar nada";
+                    totalNao++;
+                    mostrarResultado("🚫🥤", `${nome} realmente NÃO VAI tomar refrigerante`);
+                }
+            }
+        }
+        
+        function mostrarResultado(emoji, mensagem) {
+            // Esconde todas as perguntas e mostra botão para nova pessoa
+            document.getElementById('pergunta1').style.display = 'none';
+            document.getElementById('pergunta2').style.display = 'none';
+            document.getElementById('pergunta3').style.display = 'none';
+            document.getElementById('novaPessoa').style.display = 'block';
+            
+            // Atualiza volume total
+            volumeTotal += volumeConsumido;
+            
+            // Prepara a mensagem de resultado
+            let resultadoDiv = document.getElementById('resultado');
+            let emojiDiv = document.getElementById('emoji');
+            let volumeIndividualDiv = document.getElementById('volume-individual');
+            
+            resultadoDiv.innerHTML = mensagem;
+            emojiDiv.innerHTML = emoji;
+            
+            // Mostra informação sobre o volume
+            if (volumeConsumido > 0) {
+                let porcentagemCopo = Math.round((volumeConsumido / VOLUME_COPO) * 100);
+                volumeIndividualDiv.innerHTML = `Volume consumido: ${volumeConsumido}ml (${porcentagemCopo}% de um copo de ${VOLUME_COPO}ml)`;
+            } else {
+                volumeIndividualDiv.innerHTML = `Volume consumido: 0ml (0% de um copo de ${VOLUME_COPO}ml)`;
+            }
+            
+            // Adiciona ao histórico
+            const agora = new Date();
+            const horario = agora.toLocaleTimeString();
+            
+            historicoRespostas.push({
+                nome: nome,
+                decisao: decisaoAtual,
+                volume: volumeConsumido,
+                horario: horario
+            });
+            
+            // Atualiza tabela e estatísticas
+            atualizarHistorico();
+            atualizarEstatisticas();
+        }
+        
+        function atualizarHistorico() {
+            const tbody = document.getElementById('historico-tbody');
+            tbody.innerHTML = '';
+            
+            // Adiciona itens em ordem inversa (do mais recente para o mais antigo)
+            for (let i = historicoRespostas.length - 1; i >= 0; i--) {
+                const resposta = historicoRespostas[i];
+                
+                const tr = document.createElement('tr');
+                
+                const tdNome = document.createElement('td');
+                tdNome.textContent = resposta.nome;
+                
+                const tdDecisao = document.createElement('td');
+                tdDecisao.textContent = resposta.decisao;
+                
+                const tdVolume = document.createElement('td');
+                tdVolume.textContent = resposta.volume + ' ml';
+                
+                const tdHorario = document.createElement('td');
+                tdHorario.textContent = resposta.horario;
+                
+                tr.appendChild(tdNome);
+                tr.appendChild(tdDecisao);
+                tr.appendChild(tdVolume);
+                tr.appendChild(tdHorario);
+                
+                tbody.appendChild(tr);
+            }
+        }
+        
+        function atualizarEstatisticas() {
+            // Atualiza contadores
+            document.getElementById('total-registros').textContent = historicoRespostas.length;
+            document.getElementById('total-pessoas').textContent = historicoRespostas.length;
+            document.getElementById('total-sim').textContent = totalSim;
+            document.getElementById('total-golinho').textContent = totalGolinho;
+            document.getElementById('total-tiquinho').textContent = totalTiquinho;
+            document.getElementById('total-nao').textContent = totalNao;
+            
+            // Atualiza volume total
+            document.getElementById('total-volume').textContent = volumeTotal;
+            
+            // Calcula e atualiza litros totais (com 2 casas decimais)
+            const litrosTotal = (volumeTotal / 1000).toFixed(2);
+            document.getElementById('total-litros').textContent = litrosTotal;
+            
+            // Atualiza barra de progresso
+            const porcentagemMeta = Math.min(100, (volumeTotal / (META_LITROS * 1000)) * 100);
+            const barraProgresso = document.getElementById('barra-progresso');
+            barraProgresso.style.width = porcentagemMeta + '%';
+            barraProgresso.textContent = porcentagemMeta.toFixed(1) + '%';
+        }
+        
+        function novaPessoa() {
+            // Reseta o formulário para uma nova pessoa
+            volumeConsumido = 0;
+            decisaoAtual = "";
+            
+            // Limpa o campo de nome
+            document.getElementById('nome').value = '';
+            nome = "Você";
+            
+            // Atualiza a exibição do nome
+            const nomesDisplay = document.querySelectorAll('#nome-display');
+            nomesDisplay.forEach(element => {
+                element.textContent = nome;
+            });
+            
+            // Esconde o botão de nova pessoa e resultados
+            document.getElementById('novaPessoa').style.display = 'none';
+            
+            // Mostra a primeira pergunta novamente
+            document.getElementById('pergunta1').style.display = 'block';
+            
+            // Reseta a mensagem de resultado
+            document.getElementById('emoji').innerHTML = '';
+            document.getElementById('resultado').innerHTML = 'Aguardando resposta...';
+            document.getElementById('volume-individual').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
